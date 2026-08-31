@@ -1,4 +1,4 @@
-# Borrador del proyecto de la aplicación de Android
+# Proyecto de la aplicación de Android
 
 **Estudiante:** José Daniel Arroyave Buriticá
 
