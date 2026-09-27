@@ -1,4 +1,4 @@
-# Proyecto de la aplicación de Android
+# Borrador del proyecto de la aplicación de Android
 
 **Estudiante:** José Daniel Arroyave Buriticá
 
@@ -14,9 +14,13 @@ El proyecto no intenta competir con el Dashboard Web oficial de Wazuh, sino que 
 
 De esta forma, la aplicación resuelve el problema del set-up incómodo y que llega a ser engorroso de sacar una computadora en un lugar público o de acceder al Dashboard Web de Wazuh mediante el celular, el cual es una página sobrecargada de texto y funcionalidades que están adecuadas para investigaciones profundas, triage detallado e informes minuciosos en un viewport de tipo computador.
 
-## Plataforma
+## Plataforma y arquitectura
 
-La aplicación será multiplataforma y será desarrollada con Flutter y el lenguaje Dart.
+**Tecnología:** La aplicación será multiplataforma y será desarrollada con Flutter y el lenguaje Dart.
+
+**Arquitectura:** Se implementa el patrón MVVM (Model-View-ViewModel) combinado con el Patrón Repositorio, asegurando una estricta separación de responsabilidades entre la UI, la lógica de estado (Reactividad con Provider) y el acceso a los datos.
+
+**Metodología de Desarrollo:** "Desarrollo Vertical" (Vertical Slicing), construyendo funcionalidades completas de extremo a extremo (Servicio -> Repositorio -> ViewModel -> Vista).
 
 ## Interfaz de usuario e interfaz de administrador
 
@@ -26,7 +30,7 @@ La aplicación funcionará bajo una misma interfaz de control con todas las func
 
 Como la aplicación funciona bajo la arquitectura de un cliente estricto, no requiere un backend intermedio. En su lugar, la aplicación interactúa con la API RESTful de Wazuh alojada en el servidor Manager de Wazuh mediante autenticación JWT. Los componentes principales de esta aplicación son:
 
-- Configuración y Autenticación: Formulario de conexión al servidor Manager de Wazuh con almacenamiento local cifrado de credenciales. La conexión se recomendará al usuario realizarla por medio de una VPN a la empresa o a la red en donde se encuentra alojado el servidor para no exponer la API al internet público. Después de la primera conexión e inicio de sesión exitoso, la aplicación permitirá configurar bloqueo por datos biométricos para abrirse de nuevo en lugar de ingresar de nuevo las credenciales.
+- Configuración y Autenticación: Formulario de conexión al servidor Manager de Wazuh con almacenamiento local cifrado de credenciales. La conexión se recomendará al usuario realizarla por medio de una VPN a la empresa o a la red en donde se encuentra alojado el servidor para no exponer la API al internet público. Se aborda el riesgo de certificados autofirmados (CWE-295) exigiendo validación SSL estricta para entornos de producción, y proveyendo un "Modo Laboratorio" seguro internamente para pruebas locales. Después de la primera conexión e inicio de sesión exitoso, la aplicación permitirá configurar bloqueo por datos biométricos para abrirse de nuevo en lugar de ingresar de nuevo las credenciales (implementando re-autenticación silenciosa en segundo plano).
 
 - Dashboard General de Estado: Resumen inmediato del sistema. Contador global de agentes (junto a un gráfico circular representando el estado de los endpoints) y una tarjeta de resumen con la cantidad total de alertas altas (10-11) y críticas (12 a 16) detectadas en las últimas 24 horas en la infraestructura.
 
@@ -39,3 +43,35 @@ Como la aplicación funciona bajo la arquitectura de un cliente estricto, no req
 - Respuesta Activa: Pantalla emergente donde muestra varias opciones de Respuesta Activa disponibles para el agente seleccionado (e.g. “Aislar Endpoint”).
 
 - Notificaciones de Push Simples: Servicio en segundo plano que revise la API cada cierto tiempo para enviar una notificación push al celular (e.g. “Agente Windows Server AD DC desconectado”).
+
+## Registro de Cambios (Changelog)
+
+## Cambios Pasados (Módulos anteriores):
+
+- Definición del alcance del proyecto, identificación del problema y elección de la plataforma de desarrollo (Flutter/Dart).
+
+- Diseño de la Interfaz de Usuario y creación de los esquemas de página (wireframes).
+
+- Configuración inicial del repositorio en GitHub.
+
+## Cambios Actuales (Este módulo):
+
+- **Arquitectura:** Adopción del patrón MVVM y el patrón Repositorio para garantizar código limpio y escalable.
+
+- **Autenticación (Backend):** Implementación de la capa de Servicios (WazuhAuthService) para manejar peticiones HTTP a la API RESTful de Wazuh mediante Basic Auth (Base64) y retorno de Token JWT.
+
+- **Orquestación:** Creación de AuthRepository para inyección de dependencias y aislamiento de la capa de red.
+
+- **Lógica de Estado:** Desarrollo de AuthViewModel gestionando estados reactivos (carga y errores) mediante ChangeNotifier.
+
+- **Interfaz Visual (UI):** Programación de LoginView integrando el paquete provider para la actualización dinámica de la pantalla y la gestión eficiente de los controladores de texto para evitar fugas de memoria.
+
+- **Seguridad:** Implementación de DevHttpOverrides para permitir de forma controlada la interacción con certificados autofirmados de Wazuh en entornos de laboratorio (previniendo CWE-295 de forma documentada).
+
+## Cambios Futuros (Próximos módulos):
+
+- Ensamblar el punto de entrada de la app (main.dart) inyectando los proveedores globales (MultiProvider).
+
+- Integrar flutter_secure_storage en el Repositorio de Autenticación para el almacenamiento encriptado en el Keystore del celular de las credenciales y el token JWT, permitiendo re-autenticaciones silenciosas tras los 15 minutos de expiración.
+
+- Desarrollo de las rebanadas verticales (Modelos, Repositorios, ViewModels y Vistas) para el "Dashboard General de Estado" y el "Feed de emergencias".
