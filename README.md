@@ -70,8 +70,6 @@ Como la aplicación funciona bajo la arquitectura de un cliente estricto, no req
 
 ## Cambios Futuros (Próximos módulos):
 
-- Ensamblar el punto de entrada de la app (main.dart) inyectando los proveedores globales (MultiProvider).
-
 - Integrar flutter_secure_storage en el Repositorio de Autenticación para el almacenamiento encriptado en el Keystore del celular de las credenciales y el token JWT, permitiendo re-autenticaciones silenciosas tras los 15 minutos de expiración.
 
 - Desarrollo de las rebanadas verticales (Modelos, Repositorios, ViewModels y Vistas) para el "Dashboard General de Estado" y el "Feed de emergencias".
