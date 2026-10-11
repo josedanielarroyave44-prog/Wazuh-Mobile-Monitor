@@ -4,6 +4,7 @@ import 'package:wazuh_mobile_monitor/services/wazuh_auth_service.dart';
 import 'package:wazuh_mobile_monitor/repositories/auth_repository.dart';
 import 'package:wazuh_mobile_monitor/view_models/auth_viewmodel.dart';
 import 'package:wazuh_mobile_monitor/views/login_view.dart';
+import 'package:wazuh_mobile_monitor/services/wazuh_api_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +19,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (_) => WazuhAuthService()),
+        Provider(create: (_) => WazuhApiService()),
         Provider(
-          create: (context) =>
-              AuthRepository(authService: context.read<WazuhAuthService>()),
+          create: (context) => AuthRepository(
+            authService: context.read<WazuhAuthService>(),
+            apiService: context.read<WazuhApiService>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) =>
