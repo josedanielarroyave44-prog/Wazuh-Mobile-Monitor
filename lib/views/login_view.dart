@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wazuh_mobile_monitor/view_models/auth_viewmodel.dart';
+import 'package:wazuh_mobile_monitor/views/dashboard_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -95,9 +96,14 @@ class _LoginViewState extends State<LoginView> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
-                              'Connection succesful! Token Obtained',
+                              'Connection Successful! Token Obtained',
                             ),
                             backgroundColor: Colors.green,
+                          ),
+                        );
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const DashboardView(),
                           ),
                         );
                       }
